@@ -1,26 +1,234 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f5f0;
+  --foreground: #1a1a1a;
+  --primary: #8b0000; /* Deep red */
+  --secondary: #2d3748; /* Slate gray */
+  --accent: #d4a373;
+  --border: #2d2a24;
+  --card: #f0ebe4;
+  --success: #2c6e49;
+  --warning: #e6b95e;
+  --danger: #972d20;
+  --gold: #d4a373;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-serif: 'Playfair Display', serif;
+  --font-mono: 'Courier Prime', monospace;
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0e1117; /* Darker background */
+    --foreground: #f0ebe4;
+    --primary: #bf3636; /* Brighter red */
+    --secondary: #718096;
+    --accent: #e6ccb2;
+    --border: #36303a;
+    --card: #1a202c; /* Darker card background */
+    --success: #38a169;
+    --warning: #d69e2e;
+    --danger: #e53e3e;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-serif);
+  line-height: 1.6;
+}
+
+/* Neubrutalism styles - improved with stronger shadows */
+.neubrutalism {
+  border: 3px solid var(--color-foreground);
+  box-shadow: 6px 6px 0px 0px var(--color-foreground);
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+.neubrutalism:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0px 0px var(--color-foreground);
+}
+
+/* Animation for typewriter effect - improved with smoother animation */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--color-primary) }
+}
+
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid var(--color-primary);
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret 0.75s step-end infinite;
+}
+
+/* Paper texture effect for cards */
+.paper-texture {
+  background-image: linear-gradient(135deg, var(--card) 0%, var(--background) 100%);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Book texture alternative */
+.book-texture {
+  background: linear-gradient(120deg, var(--background) 0%, var(--card) 50%, var(--background) 100%);
+  position: relative;
+}
+
+.book-texture::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Text shadow utilities */
+.text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.text-shadow-md {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.text-shadow-gold {
+  text-shadow: 0 0 4px rgba(212, 163, 115, 0.5);
+}
+
+.text-shadow-xs {
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+/* Typewriter animation for AI messages */
+@keyframes typewriter-effect {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+.animate-typewriter {
+  overflow: hidden;
+  white-space: pre-wrap;
+  animation: typewriter-effect 1.5s steps(40, end);
+}
+
+/* Progress bar styling */
+.progress-bar {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark, #700000));
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px rgba(139, 0, 0, 0.3);
+}
+
+/* Enhanced button hover effects */
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* Submit button specific styling */
+button[type="submit"]:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+}
+
+/* End Debate button hover effect */
+.end-debate-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Round counter styling */
+.round-counter {
+  background: linear-gradient(135deg, var(--color-card), var(--color-background));
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-card);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Card backgrounds with elegant gradients */
+.card-bg {
+  background: linear-gradient(170deg, var(--card) 0%, var(--background) 100%);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.card-bg-light {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), transparent);
+  backdrop-filter: blur(3px);
+}
+
+/* Gold accent styling */
+.gold-accent {
+  background: linear-gradient(90deg, var(--gold), #e9d5b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 500;
 }

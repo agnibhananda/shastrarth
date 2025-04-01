@@ -1,0 +1,454 @@
+/* Advanced animations and effects */
+
+/* Text gradient effect */
+.text-gradient {
+  background: linear-gradient(120deg, var(--color-primary), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Simpler clean overlay instead of grain */
+.grain-overlay {
+  position: relative;
+}
+
+.grain-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Parallax effect */
+.parallax {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.parallax-layer {
+  transform: translateZ(0);
+  transition: transform 0.2s ease-out;
+}
+
+.parallax-layer-back {
+  transform: translateZ(-10px) scale(1.5);
+}
+
+.parallax-layer-mid {
+  transform: translateZ(-5px) scale(1.25);
+}
+
+.parallax-layer-front {
+  transform: translateZ(5px);
+}
+
+/* Scrolling text animation */
+.marquee-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-content {
+  display: flex;
+  animation: marquee 20s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Shimmering effect */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 6s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+/* Frosted glass effect */
+.frosted-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced glass morphism effect */
+.glass-morphism {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.glass-morphism:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08));
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  transform: translateY(-5px);
+}
+
+/* Sleek shadows */
+.shadow-sleek {
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.shadow-sleek-xl {
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Minimal border effect */
+.border-minimal {
+  border: 1px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+}
+
+/* Clean hover effect */
+.hover-float {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-float:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth fade-in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Subtle glow effect */
+.subtle-glow {
+  box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.subtle-glow:hover {
+  box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.15);
+}
+
+/* Outline text effect */
+.text-outline {
+  -webkit-text-stroke: 1px var(--color-foreground);
+  color: transparent;
+}
+
+/* Animated underline */
+.animated-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--color-primary);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.animated-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Spotlight effect */
+.spotlight {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(0, 0, 0, 0) 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+/* Typewriter effect */
+.typewriter-text {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 0.15em solid var(--color-primary);
+  width: 0;
+  animation: typing 3.5s steps(40, end) forwards,
+             blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--color-primary) }
+}
+
+/* 3D button effect */
+.btn-3d {
+  position: relative;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 6px;
+  box-shadow: 0 6px 0 rgb(0 0 0 / 25%);
+  transition: all 0.15s ease;
+}
+
+.btn-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 rgb(0 0 0 / 25%);
+}
+
+.btn-3d:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 25%);
+}
+
+/* Scribble Effects */
+.scribble-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.scribble-underline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  bottom: -3px;
+  left: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='6' viewBox='0 0 100 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3C8.5 1 11 5.5 18.5 3.5C26 1.5 32 5.5 40 3.5C48 1.5 55.5 5 64 3C72.5 1 80 5 88 3C96 1 100 3 100 3' stroke='%238b0000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 100px 6px;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+.scribble-circle {
+  position: relative;
+}
+
+.scribble-circle::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 5C59.5 5 68 7.5 76.5 12.5C85 17.5 91.5 24.5 96 33.5C100.5 42.5 102.5 52 100.5 61.5C98.5 71 94 80 87 87C80 94 71 98.5 61.5 100.5C52 102.5 42.5 100.5 33.5 96C24.5 91.5 17.5 85 12.5 76.5C7.5 68 5 59.5 5 50C5 40.5 7.5 32 12.5 23.5C17.5 15 24.5 8.5 33.5 4C42.5 -0.5 52 -2.5 61.5 -0.5C71 1.5 80 6 87 13' stroke='%238b0000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.scribble-highlight {
+  position: relative;
+  display: inline;
+}
+
+.scribble-highlight::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  right: -4px;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10C20 5 25 15 45 10C65 5 75 15 100 10L100 20L0 20L0 10Z' fill='%238b000022'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  z-index: -1;
+}
+
+.scribble-border {
+  position: relative;
+  border: none !important;
+}
+
+.scribble-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='5' y='5' width='190' height='190' rx='3' stroke='%238b0000' stroke-width='1.5' stroke-linecap='round' stroke-dasharray='6 8'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  z-index: 0;
+}
+
+/* Simple backgrounds instead of grain */
+.simple-gradient {
+  background: linear-gradient(150deg, var(--background), var(--card));
+}
+
+.simple-background {
+  background: var(--background);
+}
+
+/* Custom dashed border for cards */
+.dashed-border {
+  position: relative;
+}
+
+.dashed-border::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  border: 2px dashed #bf3636; /* Using the primary color for dark mode */
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Quote Card with dashed border */
+.quote-card {
+  position: relative;
+  overflow: visible;
+  z-index: 0;
+}
+
+.quote-card::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  bottom: 15px;
+  left: 18%;
+  right: 10px;
+  border: 2px dashed #bf3636;
+  border-radius: 3px;
+  z-index: -1;
+}
+
+/* Personality Card Styles */
+.personality-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.personality-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.personality-avatar {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(212, 163, 115, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.personality-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.personality-avatar.legal::before {
+  content: '⚖️';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.white-border-card {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(180deg, rgba(26, 32, 44, 0.8) 0%, rgba(17, 24, 38, 0.95) 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.white-border-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  pointer-events: none;
+} 
