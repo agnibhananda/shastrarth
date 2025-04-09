@@ -1,5 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Button from './Button';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+
+// Validate API key
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+if (!apiKey) {
+  console.error('Gemini API key is not set. Please set NEXT_PUBLIC_GEMINI_API_KEY in your environment variables.');
+}
+
+const genAI = new GoogleGenerativeAI(apiKey || '');
 
 interface Message {
   id: string;
@@ -34,7 +43,7 @@ export default function DebateChat({
   timePerRound = 0,
   onTimeEnd,
   onSubmit,
-  messages,
+  messages: initialMessages,
   isAiThinking,
   round = 1,
   maxRounds = 5,
@@ -47,8 +56,15 @@ export default function DebateChat({
 }: DebateChatProps) {
   const [message, setMessage] = useState('');
   const [timeLeft, setTimeLeft] = useState(timePerRound);
+  const [geminiError, setGeminiError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Update local messages when prop messages change
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, [initialMessages]);
 
   // Scroll to bottom of messages
   useEffect(() => {
@@ -82,16 +98,136 @@ export default function DebateChat({
     }
   }, [messages.length, isTimerActive, timePerRound]);
 
+  const generateGeminiResponse = async (userMessage: string): Promise<string> => {
+    if (!apiKey) {
+      throw new Error('Gemini API key is not configured. Please check your environment variables.');
+    }
+
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      // Create chat history ensuring user message is first
+      const chatHistory = messages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
+
+      // Start a new chat with the system prompt
+      const systemPrompt = `You are ${aiPersonality}. You must strictly maintain this identity and respond as if you are actually ${aiPersonality}. 
+      You are engaged in a formal debate about "${topic}". 
+      This is round ${round} of ${maxRounds}.
+      
+      For example, if you are Sun Tzu:
+      - Use military and strategic terminology
+      - Reference The Art of War
+      - Speak with authority and wisdom
+      - Use analogies related to warfare and strategy
+      
+      If you are Socrates:
+      - Use the Socratic method
+      - Ask probing questions
+      - Reference philosophical concepts
+      - Speak in a dialectical manner
+      
+      If you are Aristotle:
+      - Use logical reasoning
+      - Reference his works and theories
+      - Speak with systematic precision
+      - Use syllogistic arguments
+      
+      If you are Nietzsche:
+      - Use aphoristic style
+      - Reference his philosophical concepts
+      - Speak with intensity and depth
+      - Challenge conventional wisdom
+      
+      You must respond in character, using the appropriate style, terminology, and perspective of ${aiPersonality}. 
+      Never break character or acknowledge that you are an AI model.`;
+      
+      const chat = model.startChat({
+        generationConfig: {
+          maxOutputTokens: 1000,
+          temperature: 0.7,
+          topP: 0.8,
+          topK: 40,
+        },
+        safetySettings: [
+          {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          }
+        ]
+      });
+      
+      await chat.sendMessage(systemPrompt);
+      
+      // Send chat history messages in order
+      for (const msg of chatHistory) {
+        await chat.sendMessage(msg.parts[0].text);
+      }
+      
+      // Send the new user message and get response
+      const result = await chat.sendMessage(userMessage);
+      const response = result.response;
+      
+      return response.text();
+    } catch (error) {
+      console.error("Error generating Gemini response:", error);
+      if (error instanceof Error) {
+        if (error.message.includes('API key')) {
+          throw new Error('Gemini API key is invalid or not configured properly. Please check your environment variables.');
+        }
+      }
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() === '') return;
     
-    await onSubmit(message);
-    setMessage('');
-    
-    // Focus input after submission
-    if (inputRef.current) {
-      inputRef.current.focus();
+    try {
+      // Add user message
+      const userMessage: Message = {
+        id: `user-${Date.now()}`,
+        text: message,
+        sender: 'user',
+        timestamp: Date.now()
+      };
+      
+      setMessages(prev => [...prev, userMessage]);
+      setMessage('');
+      
+      // Generate Gemini response
+      const geminiResponseText = await generateGeminiResponse(message);
+      
+      if (geminiResponseText) {
+        // Add AI message
+        const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: geminiResponseText,
+          sender: 'ai',
+          timestamp: Date.now()
+        };
+        
+        setMessages(prev => [...prev, aiMessage]);
+      }
+      
+      // Focus input after submission
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    } catch (error) {
+      console.error("Error in message submission:", error);
+      if (error instanceof Error) {
+        setGeminiError(error.message);
+      } else {
+        setGeminiError("Failed to send message. Please try again.");
+      }
     }
   };
 
@@ -134,7 +270,7 @@ export default function DebateChat({
     const imagePath = imageMap[personalityLower];
     
     return (
-      <div className="personality-avatar w-24 h-24 rounded-full overflow-hidden mx-auto border-2 border-gold/50 shadow-md">
+      <div className="personality-avatar w-24 h-24 rounded-full overflow-hidden mx-auto border-2 border-gold/50 shadow-md relative">
         {imagePath ? (
           <img 
             src={`/personalities/${imagePath}`} 
